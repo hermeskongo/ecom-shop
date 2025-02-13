@@ -21,6 +21,7 @@ a:hover {
 }
 .img-wrap img {
   max-width: 100%;
+  object-fit: contain;
 }
 
 .icon-wrap {
