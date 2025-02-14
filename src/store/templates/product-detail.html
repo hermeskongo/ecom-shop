@@ -9,88 +9,71 @@
 <div class="card">
 	<div class="row no-gutters">
 		<aside class="col-md-6">
-<article class="gallery-wrap">
-	<div class="img-big-wrap">
-	   <a href="#"><img src="{{product.image.url}}"></a>
-	</div> <!-- img-big-wrap.// -->
+            <article class="gallery-wrap">
+                <div class="img-big-wrap">
+                   <a href="#"><img src="{{product.image.url}}"></a>
+                </div> <!-- img-big-wrap.// -->
 
-</article> <!-- gallery-wrap .end// -->
+            </article> <!-- gallery-wrap .end// -->
 		</aside>
-		<main class="col-md-6 border-left">
-<article class="content-body">
 
-<h2 class="title">{{ product.name }}</h2>
-
-<div class="mb-3">
-    {% if product.promotion_price %}
-	    <var class="price h4">${{ product.promotion_price }}</var>
-    {% else %}
-	    <var class="price h4">${{ product.price }}</var>
-    {% endif %}
-</div>
-
-<p>
-    {{ product.description }}
-</p>
-
-
-<hr>
-	<div class="row">
-		<div class="item-option-select">
-			<h6>Choose Color</h6>
-			<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> Silver
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color" > Gray
-			  </label>
-			  <label class="btn btn-light active">
-			    <input type="radio" name="radio_color checked"> Gold
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> Black
-			  </label>
-			</div>
-		</div>
-	</div> <!-- row.// -->
-	<div class="row">
-		<div class="item-option-select">
-			<h6>Select Size</h6>
-			<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> S
-			  </label>
-			  <label class="btn btn-light active">
-			    <input type="radio" name="radio_color" checked> M
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> L
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> XL
-			  </label>
-			</div>
-		</div>
-	</div> <!-- row.// -->
-	<hr>
-    {% if product.stock %}
-        {% if is_added %}
-            <div class="d-flex">
-                <button type="button" class="btn btn-success mr-3"><span class="text">Déjà dans votre panier</span> <i class="fas fa-check"></i></button>
-                <a href="{% url 'cart:index' %}" class="btn btn-outline-primary"><span class="text">Voir le panier</span><i class="fas fa-eye"></i></a>
-            </div>
-        {% else %}
+        <main class="col-md-6 border-left">
             <form action="{% url 'cart:add' id=product.id%}" method="post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary"><span class="text">Ajouter au panier</span><i class="fas fa-shopping-cart"></i></button>
-            </form>
-        {% endif %}
-    {% else %}
-        <div class="alert alert-danger">Rupture de stock !</div>
-    {% endif %}
-</article> <!-- product-info-aside .// -->
-		</main> <!-- col.// -->
+                        <article class="content-body">
+
+                        <h2 class="title">{{ product.name }}</h2>
+
+                        <div class="mb-3">
+                            {% if product.promotion_price %}
+                                <var class="price h4">${{ product.promotion_price }}</var>
+                            {% else %}
+                                <var class="price h4">${{ product.price }}</var>
+                            {% endif %}
+                        </div>
+
+                        <p>
+                            {{ product.description }}
+                        </p>
+
+
+                        <hr>
+                            <div class="row mb-2">
+                                <div class="item-option-select">
+                                    <h6>Choisir la couleur</h6>
+                                    <select name="couleur" id="" class="form-control" required>
+                                        <option value="" selected disabled>Choisir</option>
+                                        {% for variation in product.variations.colors %}
+                                            <option value="{{ variation.value | lower }}">{{ variation.value | capfirst }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div> <!-- row.// -->
+                            <div class="row">
+                                <div class="item-option-select">
+                                    <h6>Choisir la taille</h6>
+                                    <select name="taille" id="" class="form-control" required>
+                                        <option value="" selected disabled>Choisir</option>
+                                        {% for variation in product.variations.sizes %}
+                                            <option value="{{ variation.value | lower }}">{{ variation.value | capfirst }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div> <!-- row.// -->
+                            <hr>
+                            {% if product.stock %}
+                                <div class="d-flex">
+                                    <button type="submit" class="btn btn-primary mr-2"><span class="text">Ajouter au panier</span><i class="fas fa-shopping-cart"></i></button>
+                                    {% if is_added %}
+                                            <a href="{% url 'cart:index' %}" class="btn btn-outline-primary"><span class="text">Voir le panier</span><i class="fas fa-eye"></i></a>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-danger">Rupture de stock !</div>
+                            {% endif %}
+                        </article>
+                    </form>
+        </main>
 	</div> <!-- row.// -->
 </div> <!-- card.// -->
 <!-- ============================ COMPONENT 1 END .// ================================= -->

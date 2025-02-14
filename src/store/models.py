@@ -38,4 +38,33 @@ class Products(models.Model):
     
     class Meta:
         verbose_name = 'Produit'
+
+
+class VariationManager(models.Manager):
+    def colors(self):
+        return super(VariationManager, self).filter(category="couleur", is_active=True)
     
+    def sizes(self):
+        return super(VariationManager, self).filter(category='taille', is_active=True)
+
+
+VARIATIONS_CATEGORY_CHOICES = (
+    ('couleur', 'couleur'),
+    ('taille', 'taille'),
+)
+
+
+class ProductVariations(models.Model):
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='variations', verbose_name='Produit')
+    category = models.CharField(max_length=100, choices=VARIATIONS_CATEGORY_CHOICES, verbose_name='Type de variation')
+    value = models.CharField(max_length=100, verbose_name='Valeur de la variation')
+    is_active = models.BooleanField(default=True, verbose_name='actif ?')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    objects = VariationManager()
+    
+    def __str__(self):
+        return self.value
+    
+    class Meta:
+        verbose_name = 'Variation'

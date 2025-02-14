@@ -153,10 +153,7 @@
                                     </div>
                                 </div>
                             {% if product.stock %}
-                                <form method="post" action="{% url 'cart:add' id=product.id %}">
-                                    {% csrf_token %}
-                                    <button class="btn btn-block btn-primary">Ajouter au panier</button>
-                                </form>
+                                <a href="{% url 'store:product-details' slug=product.slug %}" class="mt-4 btn btn-block btn-primary">Voir les détails</a>
                             {% else %}
                                 <div class="alert alert-danger">Rupture de stock !</div>
                             {% endif %}

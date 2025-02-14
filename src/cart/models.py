@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 from accounts.models import CustomUser
-from store.models import Products
+from store.models import Products, ProductVariations
 
 
 class Cart(models.Model):
@@ -18,6 +18,7 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name='Produit',)
+    variations = models.ManyToManyField(ProductVariations, related_name='variations')
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, verbose_name='Panier', related_name='items')
     quantity = models.IntegerField(verbose_name='Quantité', default=1)
     is_active = models.BooleanField(default=True)
