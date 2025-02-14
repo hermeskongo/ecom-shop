@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 # Create your views here.
 from django.views.generic import ListView, DetailView
@@ -15,8 +16,13 @@ class ProductsList(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         category_slug = self.kwargs.get('slug', None)
+        keyword = self.request.GET.get('keyword')
+
         if category_slug:
             number = self.model.objects.filter(is_available=True, category__slug=category_slug).count()
+            context['number'] = number
+        elif keyword:
+            number = self.model.objects.filter(Q(description__icontains=keyword) | Q(name__icontains=keyword)).count()
             context['number'] = number
         else:
             context['number'] = self.model.objects.filter(is_available=True).count()
@@ -25,9 +31,12 @@ class ProductsList(ListView):
     
     def get_queryset(self):
         category_slug = self.kwargs.get('slug', None)
+        keyword = self.request.GET.get('keyword')
         if category_slug:
             category = get_object_or_404(Category, slug=category_slug)
             return Products.objects.filter(is_available=True, category=category).order_by('-created_at')
+        elif keyword:
+            return Products.objects.filter(Q(description__icontains=keyword) | Q(name__icontains=keyword))
         return Products.objects.filter(is_available=True).order_by('-created_at')
 
 

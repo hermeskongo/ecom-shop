@@ -9,8 +9,11 @@
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop bg">
 <div class="container">
+{% if 'search' in request.path %}
+	<h1 class="title-page text-center">Résultats de la recherche</h1>
+{% else %}
 	<h1 class="title-page text-center">Notre boutique</h1>
-
+{% endif %} 
 </div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION INTRO END// ========================= -->
@@ -122,7 +125,11 @@
             <header class="border-bottom mb-4 pb-3">
                     <div class="form-inline">
                         <span class="mr-md-auto">
-                            <strong>{% if number %} {{ number }} {% else %} 0 {% endif %} produits trouvés</strong>
+                        {% if number %}
+                            <strong>{{ number }} produit{% if number > 1 %}s{% endif %} trouvé{% if number > 1 %}s{% endif %}</strong>
+                        {% else %}
+                            <strong> 0 produits trouvé</strong>
+                        {% endif %}
                         </span>
                     </div>
             </header>
