@@ -75,7 +75,17 @@
 	</div> <!-- row.// -->
 	<hr>
     {% if product.stock %}
-        <a href="#" class="btn btn-primary"><span class="text">Ajouter au panier</span> <i class="fas fa-shopping-cart"></i></a>
+        {% if is_added %}
+            <div class="d-flex">
+                <button type="button" class="btn btn-success mr-3"><span class="text">Déjà dans votre panier</span> <i class="fas fa-check"></i></button>
+                <a href="{% url 'cart:index' %}" class="btn btn-outline-primary"><span class="text">Voir le panier</span><i class="fas fa-eye"></i></a>
+            </div>
+        {% else %}
+            <form action="{% url 'cart:add' id=product.id%}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary"><span class="text">Ajouter au panier</span><i class="fas fa-shopping-cart"></i></button>
+            </form>
+        {% endif %}
     {% else %}
         <div class="alert alert-danger">Rupture de stock !</div>
     {% endif %}

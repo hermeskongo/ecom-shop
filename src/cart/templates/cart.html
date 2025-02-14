@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load custom_filters %}
+{% load humanize %}
+
+{% block content %}
+<section class="section-content padding-y bg">
+<div class="container">
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {% for message in messages %} {{ message }} {% endfor %}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <script>
+            // Masquer le message après 2.5 secondes
+            setTimeout(function() {
+                $('.alert').alert('close');
+            }, 2500);  // 2500 ms = 2.5 secondes
+        </script>
+    {% endif %}
+<!-- ============================ COMPONENT 1 ================================= -->
+
+
+<div class="row">
+	<aside class="col-lg-9">
+<div class="card">
+    {% if not items %}
+        <div class="alert alert-info">
+            <h2 class="text-center">Votre Panier est vide</h2>
+        </div>
+    {% else %}
+<table class="table table-borderless table-shopping-cart">
+<thead class="text-muted">
+<tr class="small text-uppercase">
+  <th scope="col">Product</th>
+  <th scope="col" width="120">Quantity</th>
+  <th scope="col" width="120">Price</th>
+  <th scope="col" class="text-right" width="200"> </th>
+</tr>
+</thead>
+<tbody>
+{% for item in items %}
+<tr>
+	<td>
+		<figure class="itemside align-items-center">
+			<div class="aside"><img src="{{ item.product.image.url }}" class="img-sm"></div>
+			<figcaption class="info">
+				<a href="{% url 'store:product-details' slug=item.product.slug%}" class="title text-dark">{{ item.product.name }}</a>
+				<p class="text-muted small">Couleur: Bleu <br> Taille: M</p>
+			</figcaption>
+		</figure>
+	</td>
+	<td>
+		<!-- col.// -->
+					<div class="col">
+						<div class="input-group input-spinner">
+							<div class="input-group-prepend">
+                                <form action="{% url 'cart:reduce' item.product.id %}" method="post">
+                                    {% csrf_token %}
+							        <button class="btn btn-light" type="submit" id="button-minus"> <i class="fa fa-minus"></i> </button>
+                                </form>
+							</div>
+							<input type="text" class="form-control"  value="{{ item.quantity }}">
+							<div class="input-group-append">
+                                <form action="{% url 'cart:add' item.product.id %}" method="post">
+                                    {% csrf_token %}
+							        <button class="btn btn-light" type="submit" id="button-plus"> <i class="fa fa-plus"></i> </button>
+                                </form>
+							</div>
+						</div> <!-- input-group.// -->
+					</div> <!-- col.// -->
+	</td>
+	<td>
+		<div class="price-wrap">
+			<var class="price">${{ item.sub_total|intcomma }}</var>
+			<small class="text-muted"> ${{ item.product.promotion_price|intcomma }} l'unité</small>
+		</div> <!-- price-wrap .// -->
+	</td>
+	<td class="text-right">
+        <form action="{% url 'cart:remove' item.id %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Supprimer</button>
+        </form>
+	</td>
+</tr>
+{% endfor %}
+{% endif %}
+</tbody>
+</table>
+</div> <!-- card.// -->
+
+	</aside> <!-- col.// -->
+	<aside class="col-lg-3">
+
+		<div class="card">
+		<div class="card-body">
+			<dl class="dlist-align">
+			  <dt>Total</dt>
+			  <dd class="text-right">${{ total_w_tax|intcomma }}</dd>
+			</dl>
+			<dl class="dlist-align">
+			  <dt>Taxe:</dt>
+			  <dd class="text-right"> ${{ tax|intcomma }}</dd>
+			</dl>
+			<dl class="dlist-align">
+			  <dt>Prix total:</dt>
+			  <dd class="text-right text-dark b"><strong>${{ total|intcomma}}</strong></dd>
+			</dl>
+			<hr>
+			<p class="text-center mb-3">
+				<img src="{% static './images/misc/payments.png' %}" height="26">
+			</p>
+			<a href="./place-order.html" class="btn btn-primary btn-block"> Paiement </a>
+			<a href="{% url 'store:index' %}" class="btn btn-light btn-block">Continuer le shopping</a>
+		</div> <!-- card-body.// -->
+		</div> <!-- card.// -->
+
+</aside> <!-- col.// -->
+
+
+</div> <!-- row.// -->
+<!-- ============================ COMPONENT 1 END .// ================================= -->
+
+</div> <!-- container .//  -->
+</section>
+
+{% endblock %}

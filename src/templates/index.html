@@ -32,7 +32,13 @@
                             <a href="{% url 'store:product-details' slug=product.slug %}" class="img-wrap"> <img src="{{ product.image.url }}"> </a>
                             <figcaption class="info-wrap">
                                 <a href="{% url 'store:product-details' slug=product.slug %}" class="title">{{ product.name }}</a>
-                                <div class="price mt-1">${{ product.price }}</div> <!-- price-wrap.// -->
+                                {% if product.promotion_price == product.price %}
+                                    <div class="price mt-1">${{ product.price }}</div>
+                                {% else %}
+                                    <span class="price">${{ product.promotion_price }}</span>
+                                    <del class="price-old">${{ product.price }}</del>
+                                {% endif %}
+                                <a href="{% url 'store:product-details' slug=product.slug %}" class="mt-4 btn btn-block btn-primary">Voir les détails</a>
                             </figcaption>
                         </div>
                     </div>

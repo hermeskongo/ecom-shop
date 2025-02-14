@@ -37,13 +37,13 @@
 <div class="row align-items-center">
 	<div class="col-lg-2 col-md-3 col-6">
 		<a href="{% url 'home' %}" class="brand-wrap">
-			<img class="logo" src="{% static './images/logo.png' %}">
+			<img class="logo" style="width: 100%" src="{% static './images/logo.png' %}">
 		</a> <!-- brand-wrap.// -->
 	</div>
 	<div class="col-lg col-sm col-md col-6 flex-grow-0">
 		<div class="category-wrap dropdown d-inline-block float-right">
 			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-				<i class="fa fa-bars"></i>Carégories
+				<i class="fa fa-bars"></i> Carégories
 			</button>
 			<div class="dropdown-menu">
                     <a href="{% url 'store:index' %}" class="dropdown-item">Tout</a></a>
@@ -76,9 +76,9 @@
 							<a href="./register.html"> S'inscrire</a>
 						</div>
 					</div>
-					<a href="./cart.html" class="widget-header pl-3 ml-3">
+					<a href="{% url 'cart:index' %}" class="widget-header pl-3 ml-3">
 						<div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
-						<span class="badge badge-pill badge-danger notify">0</span>
+						<span class="badge badge-pill badge-danger notify">{{ cart_counter }}</span>
 					</a>
 				</div> <!-- widgets-wrap.// -->
 			</div> <!-- col.// -->

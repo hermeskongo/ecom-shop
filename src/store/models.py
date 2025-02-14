@@ -25,7 +25,7 @@ class Products(models.Model):
     slug = models.CharField(max_length=200, unique=True)
     description = models.TextField(max_length=800, blank=True)
     price = models.IntegerField(verbose_name='Prix')
-    promotion_price = models.IntegerField(verbose_name='Prix promotionel', blank=True, default=0)
+    promotion_price = models.IntegerField(verbose_name='Prix promotionel', blank=True, default=price)
     stock = models.IntegerField(verbose_name='Stock', default=0)
     is_available = models.BooleanField(verbose_name='Disponible ?')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
