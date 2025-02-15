@@ -116,7 +116,8 @@ class CartItemRemoveView(View):
     def post(self, *args, **kwargs):
         item = get_object_or_404(CartItem, id=int(self.kwargs['id']))
         if item:
-            messages.success(self.request, f"Le produit {item.product.name} à bien été supprimer")
+            product_name = item.product.name
             item.delete()
+            messages.success(self.request, f"Le produit {product_name} à bien été supprimer")
         
         return redirect('cart:index')

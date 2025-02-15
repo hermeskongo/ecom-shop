@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="section-content padding-y">
+
+<!-- ============================ COMPONENT REGISTER   ================================= -->
+	<div class="card mx-auto" style="max-width:620px; margin-top:40px;">
+      <article class="card-body">
+		<header class="mb-4"><h4 class="card-title">Inscription</h4></header>
+		<form action="{% url 'accounts:register' %}" method="post">
+                {% csrf_token %}
+				<div class="form-row">
+					<div class="col form-group">
+						<label>Nom</label>
+                        {{ form.last_name }}
+                        <div class="invalid-feedback">{{ form.last_name.errors }}</div>
+					</div>
+					<div class="col form-group">
+						<label>Prénom</label>
+                        {{ form.first_name }}
+                        <div class="invalid-feedback">{{ form.first_name.errors }}</div>
+					</div>
+                </div>
+				<div class="form-group">
+					<label>E-mail</label>
+                    {{ form.email }}
+                    {% if form.errors.email %}
+                        <div class="invalid-feedback">{{ form.email.errors }}</div>
+                    {% else %}
+					    <small class="form-text text-muted">Ne partagez jamais cet e-mail à une autre personne</small>
+                    {% endif %}
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md-6">
+					  <label>Adresse</label>
+                        {{ form.address }}
+                        <div class="invalid-feedback">{{ form.address.errors }}</div>
+					</div>
+					<div class="form-group col-md-6">
+					  <label>Numéro de téléphone</label>
+                        {{ form.phone_number }}
+					</div>
+                </div>
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label>Mot de passe</label>
+                        {{ form.password1 }}
+                        <div class="invalid-feedback">{{ form.password1.errors }}</div>
+					</div>
+					<div class="form-group col-md-6">
+						<label>Répeter le mot de passe</label>
+                        {{ form.password2 }}
+                        {% for error in form.password2.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+					</div>
+				</div>
+			    <div class="form-group">
+			        <button type="submit" class="btn btn-primary btn-block">S'inscrire</button>
+			    </div>
+			</form>
+		</article><!-- card-body.// -->
+    </div> <!-- card .// -->
+    <p class="text-center mt-4">Vous avez déjà un compte ? <a href="">Connectez-vous</a></p>
+    <br><br>
+<!-- ============================ COMPONENT REGISTER  END.// ================================= -->
+
+
+</section>
+{% endblock %}

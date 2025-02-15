@@ -73,7 +73,7 @@
 						<small class="title text-muted">Bienvenue !</small>
 						<div>
 							<a href="./signin.html">Se connecter</a> <span class="dark-transp"> | </span>
-							<a href="./register.html"> S'inscrire</a>
+							<a href="{% url 'accounts:register' %}">S'inscrire</a>
 						</div>
 					</div>
 					<a href="{% url 'cart:index' %}" class="widget-header pl-3 ml-3">
