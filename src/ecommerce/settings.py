@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-dvq*4#-*^tqzt8ca!ow%j812h7v-*@-_fjre=1o$)sm=g%$a1j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 
 # Application definition
@@ -135,3 +135,8 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+

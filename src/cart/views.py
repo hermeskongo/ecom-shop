@@ -20,19 +20,24 @@ class CartAddView(View):
         for item in self.request.POST:
             key = item
             value = self.request.POST.get(key)
-            
-            try:
-                variation = ProductVariations.objects.get(category__iexact=key, value__iexact=value)
-                product_variations.append(variation)
-            except:
-                pass
+            print(f"{key} : {value}")
+            if key != 'csrfmiddlewaretoken':
+                try:
+                    variation = ProductVariations.objects.filter(category__iexact=key, value__iexact=value).first()
+                    print(variation)
+                    if variation:
+                        product_variations.append(variation)
+                except:
+                    pass
+        
+        print(product_variations)
         
         cart, created = Cart.objects.get_or_create(user=self.request.user)
 
         # Permet de récupérer
-        is_cart_item_exists = CartItem.objects.filter(product=product, cart=cart).exists()
+        cart_item_exist = CartItem.objects.filter(product=product, cart=cart).exists()
         
-        if is_cart_item_exists:
+        if cart_item_exist:
             cart_items = CartItem.objects.filter(product=product, cart=cart)
             
             exist_variations_list = []
@@ -65,17 +70,18 @@ class CartAddView(View):
 class CartDeleteView(View):
     
     def post(self, request, *args, **kwargs):
-        product = get_object_or_404(Products, id=self.kwargs['id'])
+        product = get_object_or_404(Products, id=self.kwargs['product_id'])
+        item_id = self.kwargs['cart_item_id']
         
         cart = Cart.objects.get(user=self.request.user)
         if cart:
-            cart_item = CartItem.objects.get(product=product, cart=cart)
+            cart_item = CartItem.objects.get(product=product, cart=cart, id=item_id)
             
-            if cart_item and cart_item.quantity > 0:
+            if cart_item and cart_item.quantity > 1:
                 cart_item.quantity -= 1
                 cart_item.save()
             else:
-                messages.error(self.request, "Vous ne pouvez pas avoir une quantité d'articles inférieur à 0")
+                cart_item.delete()
         else:
             messages.error(self.request, "Vous n'avez pas de panier")
         
