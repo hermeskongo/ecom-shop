@@ -25,17 +25,16 @@ from django.contrib.auth import get_user_model, login
 from django.http import HttpResponse
 
 
-def good(request):
-    user = get_user_model().objects.get(email='hermes@gmail.com')
-    user.backend = 'django.contrib.auth.backends.ModelBackend'
-    login(request, user)
-    return HttpResponse("User logged in")
+# def good(request):
+#    user = get_user_model().objects.get(email='hermes@gmail.com')
+#    user.backend = 'django.contrib.auth.backends.ModelBackend'
+#    login(request, user)
+#    return HttpResponse("User logged in")
 
-
+# path('good/', good),
 urlpatterns = [
         path('admin/', admin.site.urls),
         path('', home, name='home'),
-        path('good/', good),
         path('', include('store.urls')),
         path('', include('cart.urls')),
         path('', include('accounts.urls'))

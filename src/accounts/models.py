@@ -15,6 +15,7 @@ class CustomUser(AbstractUser):
     address = models.CharField(max_length=155, blank=False, null=False, verbose_name='Adresse')
     first_name = models.CharField(max_length=150, blank=False)
     last_name = models.CharField(max_length=150, blank=False)
+    is_active = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'email'
     MAIL_FIELD = "email"

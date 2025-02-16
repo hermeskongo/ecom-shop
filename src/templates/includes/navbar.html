@@ -74,18 +74,19 @@
 		</form> <!-- search-wrap .end// -->
 	</div> <!-- col.// -->
 	<div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
-				<div class="d-flex justify-content-between mb-3 mb-lg-0">
-					<div class="widget-header" style="margin-right: 5px;">
+				<div class="d-flex mb-3 mb-lg-0">
+					<div class="widget-header ml-2" style="margin-right: 5px;">
 						<div>
                             {% if user.is_authenticated %}
-                                    <small>Bienvenue {{ user.first_name|capfirst }}</small>
-                                <form action="{% url 'accounts:logout' %}" method="post">
+                                <form action="{% url 'accounts:logout' %}" class="ml-auto" method="post">
                                     {% csrf_token %}
                                     <button class="btn btn-primary-light" type="submit">Se déconnecter</button>
                                 </form>
                             {% else %}
-                                <a href="{% url 'accounts:login' %}">Se connecter</a> <span class="dark-transp"> | </span>
-							    <a href="{% url 'accounts:register' %}">S'inscrire</a>
+                                <div class="ml-5 d-block">
+                                    <a href="{% url 'accounts:login' %}">Se connecter</a> <span class="dark-transp"> | </span>
+                                    <a href="{% url 'accounts:register' %}">S'inscrire</a>
+                                </div>
                             {% endif %}
 						</div>
 					</div>
