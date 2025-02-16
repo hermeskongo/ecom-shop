@@ -24,6 +24,12 @@
             </ul>
 		</li>
     </ul>
+    {% if user.is_authenticated %}
+      <ul class="navbar-nav mx-auto">
+          <p>Bienvenue <strong>{{ user.first_name|capfirst }}</strong></p>
+      </ul>
+    {% endif %}
+
     <ul class="navbar-nav">
 		<li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>
 		<li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>
@@ -68,15 +74,22 @@
 		</form> <!-- search-wrap .end// -->
 	</div> <!-- col.// -->
 	<div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
-				<div class="d-flex justify-content-end mb-3 mb-lg-0">
-					<div class="widget-header">
-						<small class="title text-muted">Bienvenue !</small>
+				<div class="d-flex justify-content-between mb-3 mb-lg-0">
+					<div class="widget-header" style="margin-right: 5px;">
 						<div>
-							<a href="./signin.html">Se connecter</a> <span class="dark-transp"> | </span>
-							<a href="{% url 'accounts:register' %}">S'inscrire</a>
+                            {% if user.is_authenticated %}
+                                    <small>Bienvenue {{ user.first_name|capfirst }}</small>
+                                <form action="{% url 'accounts:logout' %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary-light" type="submit">Se déconnecter</button>
+                                </form>
+                            {% else %}
+                                <a href="{% url 'accounts:login' %}">Se connecter</a> <span class="dark-transp"> | </span>
+							    <a href="{% url 'accounts:register' %}">S'inscrire</a>
+                            {% endif %}
 						</div>
 					</div>
-					<a href="{% url 'cart:index' %}" class="widget-header pl-3 ml-3">
+					<a href="{% url 'cart:index' %}" class="widget-header">
 						<div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
 						<span class="badge badge-pill badge-danger notify">{{ cart_counter }}</span>
 					</a>

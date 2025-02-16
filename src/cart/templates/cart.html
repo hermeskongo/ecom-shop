@@ -7,35 +7,7 @@
 {% block content %}
 <section class="section-content padding-y bg">
 <div class="container">
-
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.tags == 'error' %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {% for message in messages %} {{ message }} {% endfor %}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% else %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {% for message in messages %} {{ message }} {% endfor %}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endif %}
-        {% endfor %}
-
-        <script>
-            // Masquer le message après 2.5 secondes
-            setTimeout(function() {
-                $('.alert').alert('close');
-            }, 2500);  // 2500 ms = 2.5 secondes
-        </script>
-    {% endif %}
-<!-- ============================ COMPONENT 1 ================================= -->
-
+{% include 'includes/messages.html' %}
 {% if not items %}
         <div class="text-center">
             <h2 class="mb-5">Votre Panier est vide</h2>
