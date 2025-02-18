@@ -2,35 +2,20 @@
 <header class="section-header">
 <nav class="navbar p-md-0 navbar-expand-sm navbar-light border-bottom">
 <div class="container">
+    {% if user.is_authenticated %}
+      <ul class="navbar-nav p-2 mx-auto d-flex align-items-center">
+          <p>Bienvenue <strong>{{ user.first_name|capfirst }}</strong></p>
+      </ul>
+        <span class="nav-item">
+          <a href="{% url 'accounts:dashboard' %}" class="nav-link text-primary">Dashboard</a>
+        </span>
+    {% endif %}
+
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTop4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarTop4">
-    <ul class="navbar-nav mr-auto">
-    	<li class="nav-item dropdown">
-		 	<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Langue</a>
-            <ul class="dropdown-menu small">
-                <li class="dropdown-item">Français</li>
-                <li class="dropdown-item">Anglais</li>
-                <li class="dropdown-item">Espagnole</li>
-            </ul>
-		</li>
-    	<li class="nav-item dropdown">
-		 	<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Devises</a>
-            <ul class="dropdown-menu small">
-                <li class="dropdown-item">EUR</li>
-                <li class="dropdown-item">USD</li>
-                <li class="dropdown-item">FCFA</li>
-            </ul>
-		</li>
-    </ul>
-    {% if user.is_authenticated %}
-      <ul class="navbar-nav mx-auto">
-          <p>Bienvenue <strong>{{ user.first_name|capfirst }}</strong></p>
-      </ul>
-    {% endif %}
-
-    <ul class="navbar-nav">
+    <ul class="ml-auto navbar-nav">
 		<li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>
 		<li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>
 	</ul> <!-- list-inline //  -->
@@ -38,15 +23,15 @@
 </div> <!-- container //  -->
 </nav>
 
-<section class="header-main border-bottom">
-	<div class="container">
+<section class=" border-bottom">
+	<div class="p-3">
 <div class="row align-items-center">
 	<div class="col-lg-2 col-md-3 col-6">
 		<a href="{% url 'home' %}" class="brand-wrap">
 			<img class="logo" style="width: 100%" src="{% static './images/logo.png' %}">
 		</a> <!-- brand-wrap.// -->
 	</div>
-	<div class="col-lg col-sm col-md col-6 flex-grow-0">
+	<div class="col-lg-2 col-sm col-md col-6 flex-grow-0">
 		<div class="category-wrap dropdown d-inline-block float-right">
 			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 				<i class="fa fa-bars"></i> Carégories
@@ -59,8 +44,8 @@
             </div>
 		</div>  <!-- category-wrap.// -->
 	</div> <!-- col.// -->
-	<a href="{% url 'store:index' %}" class="btn btn-outline-primary">Boutique</a>
-	<div class="col-lg  col-md-6 col-sm-12 col">
+    <a href="{% url 'store:index' %}" class="btn btn-outline-primary">Boutique</a>
+	<div class="col-lg-3 col-md-6 col-sm-12 col">
 		<form action="{% url 'store:search' %}" class="search" method="get">
 			<div class="input-group w-100">
 			    <input type="text" class="form-control" style="width:60%;" placeholder="Rechercher" name="keyword">
@@ -73,24 +58,24 @@
 		    </div>
 		</form> <!-- search-wrap .end// -->
 	</div> <!-- col.// -->
-	<div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
+    <div class="col-lg-2 col-md-4 col-sm-12 my-sm-4" >
+        <div>
+            {% if user.is_authenticated %}
+                <form action="{% url 'accounts:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Se déconnecter</button>
+                </form>
+            {% else %}
+                <div class="ml-5 d-block">
+                    <a href="{% url 'accounts:login' %}">Se connecter</a> <span class="dark-transp"> | </span>
+                    <a href="{% url 'accounts:register' %}">S'inscrire</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+	<div class="col-lg-1 col-sm-4 col-2 order-2 order-lg-3">
 				<div class="d-flex mb-3 mb-lg-0">
-					<div class="widget-header ml-2" style="margin-right: 5px;">
-						<div>
-                            {% if user.is_authenticated %}
-                                <form action="{% url 'accounts:logout' %}" class="ml-auto" method="post">
-                                    {% csrf_token %}
-                                    <button class="btn btn-primary-light" type="submit">Se déconnecter</button>
-                                </form>
-                            {% else %}
-                                <div class="ml-5 d-block">
-                                    <a href="{% url 'accounts:login' %}">Se connecter</a> <span class="dark-transp"> | </span>
-                                    <a href="{% url 'accounts:register' %}">S'inscrire</a>
-                                </div>
-                            {% endif %}
-						</div>
-					</div>
-					<a href="{% url 'cart:index' %}" class="widget-header">
+					<a href="{% url 'cart:index' %}" class="widget-header d-block" style="margin-left: -5%">
 						<div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
 						<span class="badge badge-pill badge-danger notify">{{ cart_counter }}</span>
 					</a>

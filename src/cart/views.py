@@ -20,7 +20,6 @@ class CartAddView(View):
         for item in self.request.POST:
             key = item
             value = self.request.POST.get(key)
-            print(f"{key} : {value}")
             if key != 'csrfmiddlewaretoken':
                 try:
                     variation = ProductVariations.objects.filter(category__iexact=key, value__iexact=value).first()

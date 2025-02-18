@@ -48,3 +48,31 @@ class UserLoginForm(AuthenticationForm):
         This method permit to set automatically an attribute with field_name, attribute_value and value
         """
         self.fields[field_name].widget.attrs[attribute] = value
+
+
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(
+        max_length=155,
+        widget=forms.TextInput({
+            'class': 'form-control',
+            'placeholder': 'Entrez votre e-mail',
+            'required': True
+        })
+    )
+
+
+class ResetPasswordForm(forms.Form):
+    password = forms.CharField(
+        max_length=155,
+        widget=forms.PasswordInput({
+            'class': 'form-control',
+            'placeholder': 'Veuillez entrer un nouveau mot de passe',
+        })
+    )
+    confirm_password = forms.CharField(
+        max_length=155,
+        widget=forms.PasswordInput({
+            'class': 'form-control',
+            'placeholder': 'Veuillez confirmer votre mot de passe',
+        })
+    )

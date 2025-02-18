@@ -142,7 +142,6 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -150,8 +149,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'elirameskongo1234@gmail.com'
 EMAIL_HOST_PASSWORD = 'hjshnzvoabsoythk'
 DEFAULT_FROM_EMAIL = 'elirameskongo1234@gmail.com'
-
-
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'accounts:login'
