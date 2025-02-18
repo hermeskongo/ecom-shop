@@ -32,6 +32,7 @@
           <h4 class="card-title my-4">Se connecter</h4>
           <form method="post" action="{% url 'accounts:login' %}">
               {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.GET.next }}">
               <div class="form-group">
                   <label>E-mail</label>
                   {{ form.username }}

@@ -65,13 +65,16 @@ class UserLoginView(LoginView):
     def form_valid(self, form):
         messages.success(self.request, 'Vous avez bien été connecté')
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        print(self.request)
+        return self.request.POST.get('next') or reverse_lazy('home')
 
 
 class UserLogoutView(LogoutView):
     def dispatch(self, *args, **kwargs):
         messages.success(self.request, f"{self.request.user.first_name} a bien été déconnecté")
         return super(UserLogoutView, self).dispatch(*args, **kwargs)
-    
     next_page = settings.LOGOUT_REDIRECT_URL
 
 
@@ -173,14 +176,32 @@ class UserResetPassword(FormView):
         if password == confirm_password:
             uid = self.request.session.get('uid')
             if uid:
-                user = CustomUser.objects.get(id=uid)
-                user.set_password(password)
-                user.save()
-                messages.success(self.request, "Votre mot de passe à été modifié avec succès")
-                return redirect("accounts:login")
+                if len(password) < 8:
+                    messages.error(self.request, "Votre mot de passe doit contenir au moins 08 caractères")
+                    return redirect("accounts:reset_password")
+                elif password.isdigit():
+                    messages.error(self.request, "Votre mot de passe ne peut contenir que des chiffres")
+                    return redirect("accounts:reset_password")
+                elif password.islower():
+                    messages.error(self.request, "Votre mot de passe doit contenir au moins une majuscule")
+                    return redirect("accounts:reset_password")
+                elif password.isupper():
+                    messages.error(self.request, "Votre mot de passe doit contenir au moins une minuscule")
+                    return redirect("accounts:reset_password")
+                elif password.isspace():
+                    messages.error(self.request, "Votre mot de passe ne doit pas contenir d'espace")
+                    return redirect("accounts:reset_password")
+                else:
+                    user = CustomUser.objects.get(id=uid)
+                    user.set_password(password)
+                    user.save()
+                    messages.success(self.request, "Votre mot de passe à été modifié avec succès")
+                    return redirect("accounts:login")
+
             else:
                 messages.error(self.request, "Erreur dans le processus. Veuillez recommencer ou contacter le "
                                              "propriétaire du site")
+                return redirect("accounts:forgot_password")
         else:
             messages.error(self.request, "Les mots de passe doivent correspondre")
             return redirect('accounts:reset_password')

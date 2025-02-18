@@ -6,4 +6,8 @@ from accounts.models import CustomUser
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('email', 'first_name', 'last_name', 'address', 'date_joined', 'last_login', 'is_active')
+    
+    list_display_links = ('first_name', 'last_name')
+    list_editable = ('is_active',)
+    

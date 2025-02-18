@@ -150,5 +150,5 @@ EMAIL_HOST_USER = 'elirameskongo1234@gmail.com'
 EMAIL_HOST_PASSWORD = 'hjshnzvoabsoythk'
 DEFAULT_FROM_EMAIL = 'elirameskongo1234@gmail.com'
 
-LOGIN_REDIRECT_URL = 'home'
+
 LOGOUT_REDIRECT_URL = 'accounts:login'
