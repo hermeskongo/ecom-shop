@@ -98,25 +98,19 @@
                         </p>
                         <form action="{% url 'orders:payments' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="paid" value="paid">
                             <button class="btn btn-secondary btn-block">PayTest</button>
                         </form>
                     </div>
                 </div>
                 <div class="card my-3">
                     <div class="card-body">
-                        <form action="" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="modify" value="modify">
-                            <button class="btn btn-primary btn-block">Modifier vos informations</button>
-                        </form>
+                        <a href="{% url 'orders:update' pk=order.id %}" class="btn btn-primary btn-block">Modifier vos informations</a>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <form action="" method="post">
+                        <form action="{% url 'orders:cancel' pk=order.id %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="cancel" value="cancel">
                             <button class="btn btn-danger btn-block">Annuler la commande</button>
                         </form>
                     </div>

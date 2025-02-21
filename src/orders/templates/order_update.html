@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load custom_filters %}
+{% load widget_tweaks  %}
+{% load humanize %}
+
+{% block content %}
+<section class=" padding-y bg">
+    <div class="container">
+    {% include 'includes/messages.html' %}
+        <div>
+            <form action="" class="row" method="post">
+                {% csrf_token %}
+                <aside class="col-lg-6 col-sm-8 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                        <h4 class="card-title mb-4">Adresse de facturation</h4>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-lg-6 col-sm-12">
+                                    <label>Nom</label>
+                                    {{ form.last_name }}
+                                </div>
+                                <div class="form-group col-md-6 col-lg-6 col-sm-12">
+                                    <label>Prénom</label>
+                                    {{ form.first_name }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-lg-6 col-sm-12">
+                                    <label>E-mail</label>
+                                    {{ form.email }}
+                                </div>
+                                <div class="form-group col-md-6 col-lg-6 col-sm-12">
+                                    <label>Numéro de téléphone</label>
+                                    {{ form.phone_number }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Adresse</label>
+                                    {{ form.address }}
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-4 col-lg-4 col-sm-12">
+                                    <label>Pays</label>
+                                    {{ form.country }}
+                                </div>
+                                <div class="form-group col-md-4 col-lg-4 col-sm-12">
+                                    <label>Ville</label>
+                                    {{ form.city }}
+                                </div>
+                                <div class="form-group col-md-4 col-lg-4 col-sm-12">
+                                    <label>Quartier</label>
+                                    {{ form.quartier }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Un mot pour la commande</label>
+                                {{ form.note }}
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                <aside class="col-lg-6 col-sm-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-borderless table-shopping-cart">
+                                <thead class="text-muted">
+                                <tr class="small text-uppercase">
+                                  <th scope="col">Produits</th>
+                                  <th scope="col" width="120">Quantité</th>
+                                  <th scope="col" width="120">Prix</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in items %}
+                                    <tr>
+                                        <td>
+                                            <figure class="itemside align-items-center">
+                                                <div class="aside"><img src="{{ item.product.image.url }}" class="img-sm"></div>
+                                                <figcaption class="info">
+                                                    <p><a href="{% url 'store:product-details' slug=item.product.slug%}" class="title text-dark">{{ item.product.name }}</a></p>
+                                                    <p class="text-muted small">
+                                                        {% for variation in item.variations.all %}
+                                                            <strong>{{ variation.category | capfirst }}</strong>: {{ variation.value |capfirst }}<br>
+                                                        {% endfor %}
+                                                    </p>
+                                                </figcaption>
+                                            </figure>
+                                        </td>
+                                        <td>
+                                            <div class="text-center mt-3">
+                                                <p>{{ item.quantity }} </p>
+                                            </div>
+                                        </td>
+                                        <td class="text-left">
+                                            <div class="price-wrap mt-3">
+                                                <var class="price">${{ item.sub_total|intcomma }}</var>
+                                                <small class="text-muted"> ${{ item.product.promotion_price|intcomma }} l'unité</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-outline-success btn-block"> Sauvegarder ces informations </button>
+                        </div>
+                    </div>
+                </aside>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

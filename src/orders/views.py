@@ -8,11 +8,11 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.template.loader import render_to_string
 
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, UpdateView, DeleteView
 
-from cart.models import Cart
+from cart.models import Cart, CartItem
 from orders.forms import OrderForm
 from orders.models import Order, Payment, OrderProduct
 from store.models import Products
@@ -86,9 +86,57 @@ class PlaceOrder(LoginRequiredMixin, TemplateView, FormView):
                 return redirect("orders:payments")
 
 
+class OrderUpdate(UpdateView):
+    form_class = OrderForm
+    template_name = 'order_update.html'
+    model = Order
+    success_url = reverse_lazy('orders:payments')
+    
+    def get_context_data(self, *args,**kwargs):
+        context = super(OrderUpdate, self).get_context_data(*args, **kwargs)
+        
+        cart = Cart.objects.get(user=self.request.user)
+        
+        items = CartItem.objects.filter(cart=cart)
+        context['items'] = items
+        return context
+ 
+    def form_valid(self, form):
+        phone_number = get_form_cleaned_data('phone_number', form)
+        email = form.cleaned_data['email']
+    
+        order = self.get_object()
+    
+        user = self.request.user
+        if user:
+            if email != user.email:
+                messages.error(self.request, "Veuillez laissez la même adresse e-mail que celle de votre compte")
+                return redirect(reverse('orders:update', args=[order.id]))
+            elif phone_number != user.phone_number:
+                messages.error(self.request, "Veuillez laissez le même numéro de téléphone que celui de votre compte")
+                return redirect(reverse('orders:update', args=[order.id]))
+            else:
+                super(OrderUpdate, self).form_valid(form)
+                messages.success(self.request, "Vos informations ont bien été mises à jour")
+                return redirect(self.success_url)
+        else:
+            messages.error(self.request, "Veuillez vous connecté pour accéder à cette page")
+            return redirect("accounts:login")
+        
+        
+class OrderCancel(View):
+    def post(self, *args, **kwargs):
+        order_id = self.kwargs['pk']
+        order = Order.objects.get(id=order_id)
+        order.delete()
+        self.request.session.delete('order_number')
+        messages.success(self.request, "Votre commande a bien été annulé :(, veuillez poursuivre vos achats :)")
+        return redirect("cart:index")
+    
+    
 class OrderPayments(TemplateView):
     template_name = 'payments.html'
-    
+
     def get_context_data(self, *args, **kwargs):
         context = super(OrderPayments, self).get_context_data(*args, **kwargs)
         
@@ -99,6 +147,7 @@ class OrderPayments(TemplateView):
             order = Order.objects.get(order_number=order_number)
             total_w_tax = order.total - order.tax
             
+            context['order'] = order
             context['last_name'] = order.last_name
             context['total'] = order.total
             context['tax'] = order.tax
@@ -111,7 +160,7 @@ class OrderPayments(TemplateView):
             context['quartier'] = order.quartier
             context['items'] = cart_items
             context['total_w_tax'] = total_w_tax
-        
+            
         return context
     
     def post(self, *args, **kwargs):
@@ -178,6 +227,9 @@ class OrderPayments(TemplateView):
             send_mail(subject=mail_subject, message=message, html_message=message, from_email='elirameskongo1234@gmail.com', recipient_list=[self.request.user.email])
             
             return redirect("orders:complete")
+        else:
+            messages.error(self.request, "Vous n'avez pas accès à cette page")
+            return redirect("cart:index")
         
    
 class OrderComplete(TemplateView):

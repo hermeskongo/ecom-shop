@@ -128,7 +128,7 @@
                         {% if number %}
                             <strong>{{ number }} produit{% if number > 1 %}s{% endif %} trouvé{% if number > 1 %}s{% endif %}</strong>
                         {% else %}
-                            <strong> 0 produits trouvé</strong>
+                            <strong>Aucun produit trouvé</strong>
                         {% endif %}
                         </span>
                     </div>
@@ -152,7 +152,7 @@
                                         {% endif %}
                                     </div>
                                 </div>
-                            {% if product.stock %}
+                            {% if product.stock > 0 %}
                                 <a href="{% url 'store:product-details' slug=product.slug %}" class="mt-4 btn btn-block btn-primary">Voir les détails</a>
                             {% else %}
                                 <div class="alert alert-danger">Rupture de stock !</div>

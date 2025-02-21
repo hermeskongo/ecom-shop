@@ -59,17 +59,17 @@
                                     {% for variation in item.variations.all %}
                                         <input type="hidden" name="{{ variation.category | lower }}" value="{{ variation.value | capfirst }}">
                                     {% endfor %}
-							        <button class="btn btn-light" type="submit" id="button-plus"> <i class="fa fa-plus"></i> </button>
+							        <button class="btn btn-light" type="submit" id="button-plus" {% if item.quantity == item.product.stock %} disabled onmouseover="return confirm('Vous avez atteint la quantité maximale')" {% endif %} > <i class="fa fa-plus"></i> </button>
                                 </form>
 							</div>
-						</div> <!-- input-group.// -->
-					</div> <!-- col.// -->
+						</div>
+                    </div>
 	</td>
 	<td>
 		<div class="price-wrap">
 			<var class="price">${{ item.sub_total|intcomma }}</var>
 			<small class="text-muted"> ${{ item.product.promotion_price|intcomma }} l'unité</small>
-		</div> <!-- price-wrap .// -->
+		</div>
 	</td>
 	<td class="text-right">
         <form action="{% url 'cart:remove' item.id %}" method="post">
@@ -81,9 +81,9 @@
 {% endfor %}
 </tbody>
 </table>
-</div> <!-- card.// -->
+</div>
 
-	</aside> <!-- col.// -->
+	</aside>
 	<aside class="col-lg-3">
 
 		<div class="card">
