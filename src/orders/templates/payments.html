@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load custom_filters %}
+{% load humanize %}
+
+{% block content %}
+<section class="section-content padding-y bg">
+    <div class="container">
+        <h2 class="mb-5 text-center">Vérifier votre commandes et passer au paiement</h2>
+        {% include 'includes/messages.html' %}
+        <div class="row">
+            <aside class="col-lg-9">
+                <div class="card mb-2">
+                    <h4 class="card-header">Adresse de facturation</h4>
+                    <div class="card-body">
+                        <p class="card-text"><strong>Nom: </strong>{{ last_name | capfirst }}</p>
+                        <p class="card-text"><strong>Prénom: </strong>{{ first_name | capfirst }}</p>
+                        <p class="card-text"><strong>Adresse: </strong>{{ address | capfirst }}</p>
+                        <p class="card-text"><strong>Pays: </strong>{{ country | capfirst }}</p>
+                        <p class="card-text"><strong>Ville: </strong>{{ city | capfirst }}</p>
+                        <p class="card-text"><strong>Quartier: </strong>{{ quartier | capfirst }}</p>
+                        <p class="card-text"><strong>E-mail: </strong>{{ email }}</p>
+                        <p class="card-text"><strong>Numéro de téléphone: </strong>{{ phone_number }}</p>
+                    </div>
+                </div>
+                <div class="card mb-2">
+                    <h4 class="card-header">Méthode de paiement</h4>
+                    <div class="card-body">
+                        <p class="card-text">Paypal</p>
+                    </div>
+                </div>
+                <div class="card mb-2">
+                    <h4 class="card-header">Produits</h4>
+                    <div class="card-body">
+                        <aside class="col-lg-12 col-sm-8">
+                            <table class="table table-borderless table-shopping-cart">
+                                <thead class="text-muted">
+                                <tr class="small text-uppercase">
+                                  <th scope="col">Produits</th>
+                                  <th scope="col" width="120">Quantité</th>
+                                  <th scope="col" width="120">Prix</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in items %}
+                                    <tr>
+                                        <td>
+                                            <figure class="itemside align-items-center">
+                                                <div class="aside"><img src="{{ item.product.image.url }}" class="img-sm"></div>
+                                                <figcaption class="info">
+                                                    <p><a href="{% url 'store:product-details' slug=item.product.slug%}" class="title text-dark">{{ item.product.name }}</a></p>
+                                                    <p class="text-muted small">
+                                                        {% for variation in item.variations.all %}
+                                                            <strong>{{ variation.category | capfirst }}</strong>: {{ variation.value |capfirst }}<br>
+                                                        {% endfor %}
+                                                    </p>
+                                                </figcaption>
+                                            </figure>
+                                        </td>
+                                        <td>
+                                            <div class="text-center mt-3">
+                                                <p>{{ item.quantity }} </p>
+                                            </div>
+                                        </td>
+                                        <td class="text-left">
+                                            <div class="price-wrap mt-3">
+                                                <var class="price">${{ item.sub_total|intcomma }}</var>
+                                                <small class="text-muted"> ${{ item.product.promotion_price|intcomma }} l'unité</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </aside>
+                    </div>
+                </div>
+            </aside>
+            <aside class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <dl class="dlist-align">
+                          <dt>Total</dt>
+                          <dd class="text-right">${{ total_w_tax|intcomma }}</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                          <dt>Taxe:</dt>
+                          <dd class="text-right"> ${{ tax|intcomma }}</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                          <dt>Prix total:</dt>
+                          <dd class="text-right text-dark b"><strong>${{ total|intcomma}}</strong></dd>
+                        </dl>
+                        <hr>
+                        <p class="text-center mb-3">
+                            <img src="{% static './images/misc/payments.png' %}" height="26">
+                        </p>
+                        <form action="{% url 'orders:payments' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="paid" value="paid">
+                            <button class="btn btn-secondary btn-block">PayTest</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card my-3">
+                    <div class="card-body">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="modify" value="modify">
+                            <button class="btn btn-primary btn-block">Modifier vos informations</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="cancel" value="cancel">
+                            <button class="btn btn-danger btn-block">Annuler la commande</button>
+                        </form>
+                    </div>
+                </div>
+        </aside>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

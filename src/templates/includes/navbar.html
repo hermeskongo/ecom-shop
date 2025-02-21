@@ -26,7 +26,7 @@
 <section class=" border-bottom">
 	<div class="p-3">
 <div class="row align-items-center">
-	<div class="col-lg-2 col-md-3 col-6">
+	<div class="col-lg-1 col-md-3 col-6">
 		<a href="{% url 'home' %}" class="brand-wrap">
 			<img class="logo" style="width: 100%" src="{% static './images/logo.png' %}">
 		</a> <!-- brand-wrap.// -->
@@ -60,12 +60,7 @@
 	</div> <!-- col.// -->
     <div class="col-lg-2 col-md-4 col-sm-12 my-sm-4" >
         <div>
-            {% if user.is_authenticated %}
-                <form action="{% url 'accounts:logout' %}" method="post">
-                    {% csrf_token %}
-                    <button class="btn btn-primary" type="submit">Se déconnecter</button>
-                </form>
-            {% else %}
+            {% if not user.is_authenticated %}
                 <div class="ml-5 d-block">
                     <a href="{% url 'accounts:login' %}">Se connecter</a> <span class="dark-transp"> | </span>
                     <a href="{% url 'accounts:register' %}">S'inscrire</a>
@@ -73,13 +68,22 @@
             {% endif %}
         </div>
     </div>
-	<div class="col-lg-1 col-sm-4 col-2 order-2 order-lg-3">
-				<div class="d-flex mb-3 mb-lg-0">
+	<div class="col-lg-3 col-sm-4 col-2">
+				<div class="d-flex mb-3 mb-lg-0 align-items-center justify-content-between">
+                    {% if request.session.order_number %}
+                        <a href="{% url 'orders:payments' %}" class="nav-link">Paiement</a>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'accounts:logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-primary" type="submit">Se déconnecter</button>
+                        </form>
+                    {% endif %}
 					<a href="{% url 'cart:index' %}" class="widget-header d-block" style="margin-left: -5%">
 						<div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
 						<span class="badge badge-pill badge-danger notify">{{ cart_counter }}</span>
 					</a>
-				</div> <!-- widgets-wrap.// -->
+				</div>
 			</div> <!-- col.// -->
 </div> <!-- row.// -->
 	</div> <!-- container.// -->
