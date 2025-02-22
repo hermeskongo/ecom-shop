@@ -1,6 +1,6 @@
 
 {% autoescape off %}
-    <h2>Salut {{ user.first_name }} {{ user.last_name }}, </h2>
+    <h2>Salut {{ user.get_full_name }}, </h2>
     <h3>nous sommes heureux de vous faire savoir que votre commande à bien  été validé</h3>
     <p><strong>Numéro de la commande: </strong>{{ order_number }}</p>
     <p>Vous serez livré dans un délai de <strong>2 à 4 semaines</strong></p>

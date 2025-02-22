@@ -1,7 +1,20 @@
 from django.db import models
 
 # Create your models here.
+from django.db.models import Avg, Count
 from django.utils.text import slugify
+
+from accounts.models import CustomUser
+
+
+# Déclarations des constantes
+SUBJECTS_CHOICES = (
+    ('Qualité', 'Qualité'),
+    ('Taille', 'Taille'),
+    ('Livraison', 'Livraison'),
+    ('SAV', 'SAV'),
+)
+
 
 
 class Category(models.Model):
@@ -36,6 +49,21 @@ class Products(models.Model):
     def __str__(self):
         return self.name
     
+    def review_average(self):
+        reviews = ReviewRating.objects.filter(product=self).aggregate(average=Avg('rating'))
+        average = None
+        if reviews['average']:
+            average = round(float(reviews['average']))
+        
+        return average
+    
+    def reviews_number(self):
+        reviews = ReviewRating.objects.filter(product=self).aggregate(count=Count('id'))
+        count = None
+        if reviews['count']:
+            count = int(reviews['count'])
+        return count
+           
     class Meta:
         verbose_name = 'Produit'
 
@@ -68,3 +96,20 @@ class ProductVariations(models.Model):
     
     class Meta:
         verbose_name = 'Variation'
+
+
+class ReviewRating(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='reviews')
+    subject = models.CharField(max_length=155, verbose_name="Sujet", blank=True, choices=SUBJECTS_CHOICES)
+    message = models.TextField(max_length=600, verbose_name="Message", blank=True)
+    rating = models.FloatField(verbose_name="Note")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"Notation de {self.user.first_name} sur \"{self.product.name}\""
+    
+    class Meta:
+        verbose_name = 'Commentaire et notation'
+        verbose_name_plural = 'Commentaires et notation'

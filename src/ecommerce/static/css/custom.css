@@ -1,0 +1,38 @@
+.rate > input{
+    display: none;
+}
+
+.rate {
+    display: inline-block;
+}
+
+.rate > label {
+    float: right;
+}
+
+.rate > label:before {
+    display: inline-block;
+    font-size: 1.1rem;
+    content: "\f005";
+    font-family: FontAwesome, serif;
+    cursor: pointer;
+    padding: 0.3rem .2rem;
+}
+
+.rate .half:before {
+    content: "\f089";
+    position: absolute;
+    padding-right: 0;
+}
+
+input:checked ~ label, input:hover ~ label {
+    color: gold;
+}
+
+input:checked ~ label:hover, input:checked ~ label:hover ~ label,
+label:hover ~ input:checked ~ label {
+    color: darkgoldenrod;
+}
+.rating_stars i{
+    color: gold !important;
+}

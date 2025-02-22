@@ -1,5 +1,5 @@
 {% autoescape off %}
-    <h1 class="text-info">Bonjour {{ user.first_name|capfirst }} {{ user.last_name|upper }},</h1>
+    <h1 class="text-info">Bonjour {{ user.get_full_name }},</h1>
     <h4>Veuillez cliquer sur le lien ci-dessous pour activer votre compte :</h4>
     <a href="{{ activation_link }}">Activer mon compte</a>
 
