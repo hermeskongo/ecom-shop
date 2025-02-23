@@ -9,11 +9,13 @@
             <div class="row no-gutters">
                 <aside class="col-md-6">
                     <article class="gallery-wrap">
-                        <div class="img-big-wrap">
-                           <a href="#"><img class="" src="{{product.image.url}}"></a>
-                        </div> <!-- img-big-wrap.// -->
-
-                    </article> <!-- gallery-wrap .end// -->
+                          <swiper-container class="img-big-wrap mySwiper" navigation="true" pagination="true" keyboard="true" mousewheel="true" css-mode="true">
+                            <swiper-slide><img class="" src="{{product.image.url}}"></swiper-slide>
+                            {% for i in product_gallery %}
+                                <swiper-slide><img src="{{ i.image.url }}" alt=""></swiper-slide>
+                            {% endfor %}
+                          </swiper-container>
+                    </article>
                 </aside>
                 <main class="col-md-6 border-left">
                     <form action="{% url 'cart:add' id=product.id%}" method="post">

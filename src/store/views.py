@@ -7,7 +7,7 @@ from django.views.generic import ListView, DetailView, FormView
 from cart.models import Cart, CartItem
 from orders.models import OrderProduct
 from store.forms import ReviewRatingForm
-from store.models import Products, Category, ReviewRating
+from store.models import Products, Category, ReviewRating, ProductGallery
 
 
 class ProductsList(ListView):
@@ -76,12 +76,14 @@ class ProductDetails(DetailView):
             rated = None
             
         reviews = ReviewRating.objects.filter(product=self.get_object()).order_by('-updated_at')
+        product_gallery = ProductGallery.objects.filter(product=self.get_object())
         
         context['is_added'] = is_added
         context['bought'] = bought
         context['form'] = ReviewRatingForm()
         context['reviews'] = reviews
         context['rated'] = rated
+        context['product_gallery'] = product_gallery
         
         return context
     

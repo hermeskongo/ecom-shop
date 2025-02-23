@@ -16,7 +16,6 @@ SUBJECTS_CHOICES = (
 )
 
 
-
 class Category(models.Model):
     name = models.CharField(max_length=155, blank=False, unique=True, verbose_name="Nom de la catégorie")
     slug = models.SlugField(max_length=200, blank=True, null=True)
@@ -113,3 +112,16 @@ class ReviewRating(models.Model):
     class Meta:
         verbose_name = 'Commentaire et notation'
         verbose_name_plural = 'Commentaires et notation'
+
+
+class ProductGallery(models.Model):
+    product = models.ForeignKey(Products, default=None, on_delete=models.CASCADE)
+    image = models.ImageField(verbose_name='Image', upload_to="gallery")
+    
+    def __str__(self):
+        return f"Image de la galerie de {self.product.name}"
+    
+    class Meta:
+        verbose_name = 'Galerie d\'images'
+        verbose_name_plural = 'Galerie d\'images'
+        
