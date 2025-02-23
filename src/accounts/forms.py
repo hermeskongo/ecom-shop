@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from accounts.models import CustomUser
+from accounts.models import CustomUser, UserProfile
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -76,3 +76,33 @@ class ResetPasswordForm(forms.Form):
             'placeholder': 'Veuillez confirmer votre mot de passe',
         })
     )
+
+
+class UserProfileForm(forms.ModelForm):
+    picture = forms.ImageField(widget=(forms.FileInput(attrs={})), error_messages={
+        'invalid': 'Veuillez entrez uniquement une image',
+        'required': 'L\'image est requise'
+    })
+    
+    class Meta:
+        fields = ['country', 'city', 'quartier', 'picture']
+        model = UserProfile
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+    
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'phone_number', 'address']
+    
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+

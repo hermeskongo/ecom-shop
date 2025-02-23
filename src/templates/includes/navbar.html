@@ -45,10 +45,10 @@
 		</div>  <!-- category-wrap.// -->
 	</div> <!-- col.// -->
     <a href="{% url 'store:index' %}" class="btn btn-outline-primary">Boutique</a>
-	<div class="col-lg-3 col-md-6 col-sm-12 col">
+	<div class="col-lg-5 col-md-6 col-sm-12 col">
 		<form action="{% url 'store:search' %}" class="search" method="get">
 			<div class="input-group w-100">
-			    <input type="text" class="form-control" style="width:60%;" placeholder="Rechercher" name="keyword">
+			    <input type="text" class="form-control" style="width:60%;" placeholder="Rechercher" value="{{ request.GET.keyword }}" name="keyword">
 
 			    <div class="input-group-append">
 			      <button class="btn btn-primary" type="submit">
@@ -58,27 +58,23 @@
 		    </div>
 		</form> <!-- search-wrap .end// -->
 	</div> <!-- col.// -->
-    <div class="col-lg-2 col-md-4 col-sm-12 my-sm-4" >
-        <div>
             {% if not user.is_authenticated %}
+             <div class="col-lg-2 col-md-4 col-sm-12 my-sm-4" >
                 <div class="ml-5 d-block">
                     <a href="{% url 'accounts:login' %}">Se connecter</a> <span class="dark-transp"> | </span>
                     <a href="{% url 'accounts:register' %}">S'inscrire</a>
                 </div>
+            </div>
+            {% else %}
+             <div class="col-lg-2 col-md-4 col-sm-12 my-sm-4" >
+                <form action="{% url 'accounts:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Se déconnecter</button>
+                </form>
+             </div>
             {% endif %}
-        </div>
-    </div>
-	<div class="col-lg-3 col-sm-4 col-2">
+	<div class="col-lg-1 col-sm-4 col-2">
 				<div class="d-flex mb-3 mb-lg-0 align-items-center justify-content-between">
-                    {% if request.session.order_number %}
-                        <a href="{% url 'orders:payments' %}" class="nav-link">Paiement</a>
-                    {% endif %}
-                    {% if user.is_authenticated %}
-                        <form action="{% url 'accounts:logout' %}" method="post">
-                            {% csrf_token %}
-                            <button class="btn btn-primary" type="submit">Se déconnecter</button>
-                        </form>
-                    {% endif %}
 					<a href="{% url 'cart:index' %}" class="widget-header d-block" style="margin-left: -5%">
 						<div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
 						<span class="badge badge-pill badge-danger notify">{{ cart_counter }}</span>

@@ -4,16 +4,6 @@
 {% load humanize %}
 
 {% block content %}
-    <div class="container" style="margin-top: 50px;">
-        <center><i class="fas fa-check-circle" style="font-size: 72px;margin-bottom: 20px;color: #28A745;"></i></center>
-        <h2 class="text-center">Payment réussi</h2>
-        <br>
-        <div class="text-center">
-            <a href="{% url 'store:index' %}" class="btn btn-success d-inline-block mb-3">Poursuivre le shopping</a>
-        {% include 'includes/messages.html' %}
-        </div>
-    </div>
-
     <div class="container" style="padding: 50px;background: #f1f1f1;margin: 50px auto;">
         <div class="row invoice row-printable">
             <div class="col-md-12">
@@ -38,10 +28,10 @@
                                 <div class="invoice-details mt25">
                                     <div class="well">
                                         <ul class="list-unstyled mb0">
-                                            <li><strong>Commande</strong> #{{order.order_number}}</li>
-                                            <li><strong>Transaction</strong> #{{ order.payment.payment_id }}</li>
+                                            <li><strong>Commande:</strong> #{{order.order_number}}</li>
+                                            <li><strong>Transaction:</strong> #{{ order.payment.payment_id }}</li>
                                             <li><strong>Date:</strong> {{ order.created_at|date:'d/m/Y à H:i:s' }}</li>
-                                            <li><strong>Status:</strong> Payé</li>
+                                            <li><strong>Status:</strong> {{ order.status }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -68,7 +58,7 @@
                                                             </ul>
                                                         </td>
                                                         <td class="text-center">{{ order_product.quantity }}</td>
-                                                        <td class="text-center">${{ order_product.product_price|intcomma}} USD</td>
+                                                        <td class="text-center">(unité) ${{ order_product.product_price|intcomma}} USD</td>
                                                     </tr>
                                                 {% endfor %}
 

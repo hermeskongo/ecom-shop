@@ -1,0 +1,13 @@
+<aside class="col-md-3">
+    <ul class="list-group">
+        <a class="list-group-item {% if request.path == '/accounts/dashboard/' %}active{% endif %}" href="{% url 'accounts:dashboard' %}">Dashboard</a>
+        <a class="list-group-item {% if '/orders/' in request.path  %}active{% endif %}" href="{% url 'accounts:dashboard_orders' %}">commandes</a>
+        <a class="list-group-item {% if '/profile/' in request.path  %}active{% endif %}" href="{% url 'accounts:dashboard_profile' %}">Modifier le profile</a>
+        <a class="list-group-item {% if '/password/' in request.path  %}active{% endif %}" href="{% url 'accounts:dashboard_password' %}">Changer le mot de passe</a>
+    </ul>
+    <br>
+    <form action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-light btn-block mb-5" type="submit"> <i class="fa fa-power-off"></i> <span class="text">Se déconnecter</span> </button>
+    </form>
+</aside>

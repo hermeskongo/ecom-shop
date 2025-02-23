@@ -253,6 +253,7 @@ class OrderComplete(TemplateView):
             context['tax'] = tax
             context['sub_total'] = sub_total
             
+            print(self.request.session.delete('order_number'))
             self.request.session.delete('order_number')
             
             return context

@@ -35,9 +35,13 @@ class ProductsList(ListView):
     def get_queryset(self):
         category_slug = self.kwargs.get('slug', None)
         keyword = self.request.GET.get('keyword')
+        
+        # Récupération de tous les produits appartenant à une certaines catégories
         if category_slug:
             category = get_object_or_404(Category, slug=category_slug)
             return Products.objects.filter(is_available=True, category=category).order_by('-created_at')
+        
+        # Moteur de recherche
         elif keyword:
             return Products.objects.filter(Q(description__icontains=keyword) | Q(name__icontains=keyword))
         return Products.objects.filter(is_available=True).order_by('-created_at')

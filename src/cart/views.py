@@ -8,6 +8,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, FormView
 
+from accounts.forms import UserProfileForm
+from accounts.models import UserProfile
 from cart.models import Cart, CartItem
 from orders.forms import OrderForm
 from store.models import Products, ProductVariations
@@ -27,13 +29,10 @@ class CartAddView(LoginRequiredMixin, View):
             if key != 'csrfmiddlewaretoken':
                 try:
                     variation = ProductVariations.objects.filter(category__iexact=key, value__iexact=value).first()
-                    print(variation)
                     if variation:
                         product_variations.append(variation)
                 except:
                     pass
-        
-        print(product_variations)
         
         cart, created = Cart.objects.get_or_create(user=self.request.user)
         
@@ -68,7 +67,12 @@ class CartAddView(LoginRequiredMixin, View):
                 cart_item.save()
         
         return redirect('cart:index')
-    
+
+    """
+        La surcharge de cette méthode permet d'afficher un message d'erreur à l'utilisateur lorsqu'il n'a pas les
+        permission nécéssaire
+    """
+
     def handle_no_permission(self):
         messages.error(self.request, "Vous devez être connecté pour effectuer cette action")
         return redirect(self.login_url)
@@ -120,10 +124,25 @@ class CartIndex(LoginRequiredMixin, TemplateView, FormView):
         
         return context
     
+    """
+        La surcharge de cette méthode permet de présélectionner les différents champs que l'utilisateur a déjà rempli
+        au niveau de son profil d'utilisateur
+    """
+    
+    def get_form(self, form_class=OrderForm):
+        user_profile = get_object_or_404(UserProfile, user=self.request.user)
+        
+        return OrderForm(instance=user_profile)
+
+    """
+        La surcharge de cette méthode permet d'afficher un message d'erreur à l'utilisateur lorsqu'il n'a pas les
+        permission nécéssaire
+    """
+
     def handle_no_permission(self):
         messages.error(self.request, "Vous devez être connecté pour accéder à cette page")
         return super(CartIndex, self).handle_no_permission()
-    
+
 
 class CartItemRemoveView(View):
     

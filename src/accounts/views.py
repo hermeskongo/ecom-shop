@@ -1,23 +1,26 @@
+import os
+
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
-from django.http import request, Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, get_object_or_404
 
 # Create your views here.
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, ListView, UpdateView, DetailView
 
-from accounts.forms import UserRegistrationForm, UserLoginForm, ForgotPasswordForm, ResetPasswordForm
-from accounts.models import CustomUser
+from accounts.forms import UserRegistrationForm, UserLoginForm, ForgotPasswordForm, ResetPasswordForm, UserForm, \
+    UserProfileForm
+from utils.mixins import CustomLoginRequiredMixin
+from accounts.models import CustomUser, UserProfile
 from ecommerce import settings
+from orders.models import Order, OrderProduct
 
 
 class UserRegistrationView(FormView):
@@ -30,6 +33,7 @@ class UserRegistrationView(FormView):
         user.set_password(form.cleaned_data['password1'])
         email = form.cleaned_data['email']
         user.save()
+        UserProfile.objects.create(user=user)
         
         super(UserRegistrationView, self).form_valid(form)
         
@@ -63,18 +67,18 @@ class UserLoginView(LoginView):
     template_name = 'login.html'
     
     def form_valid(self, form):
-        messages.success(self.request, 'Vous avez bien été connecté')
+        messages.success(self.request, "Vous avez été connecté avec succès")
         return super().form_valid(form)
     
     def get_success_url(self):
-        print(self.request)
-        return self.request.POST.get('next') or reverse_lazy('home')
+        return self.request.POST.get('next') or reverse_lazy('accounts:dashboard')
 
 
 class UserLogoutView(LogoutView):
     def dispatch(self, *args, **kwargs):
         messages.success(self.request, f"{self.request.user.first_name} a bien été déconnecté")
         return super(UserLogoutView, self).dispatch(*args, **kwargs)
+    
     next_page = settings.LOGOUT_REDIRECT_URL
 
 
@@ -99,8 +103,118 @@ class UserActivationView(View):
             return redirect('accounts:register')
 
 
-class UserDashboardView(TemplateView):
+class UserDashboardView(CustomLoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
+    login_url = reverse_lazy("accounts:login")
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super(UserDashboardView, self).get_context_data(*args, **kwargs)
+        
+        user_profile = get_object_or_404(UserProfile, user=self.request.user)
+        
+        order = Order.objects.filter(user=self.request.user).order_by('-created_at')
+        counter_order = order.count()
+        context['counter_order'] = counter_order
+        context['user_profile'] = user_profile
+        
+        return context
+
+
+class UserDashboardOrdersView(CustomLoginRequiredMixin, ListView):
+    template_name = 'dashboard_orders.html'
+    login_url = reverse_lazy("accounts:login")
+    context_object_name = 'orders'
+    model = Order
+    
+    def get_queryset(self, *args, **kwargs):
+        related_orders = Order.objects.filter(user=self.request.user).order_by("-updated_at")
+        
+        return related_orders
+
+
+class UserDashboardOrderDetails(DetailView):
+    model = Order
+    template_name = 'order_details.html'
+    context_object_name = 'order'
+    
+    def get_context_data(self, *args,**kwargs):
+        context = super(UserDashboardOrderDetails, self).get_context_data(*args, **kwargs)
+        
+        order = self.get_object()
+        user = self.request.user
+        total = order.total
+        tax = order.tax
+        sub_total = (order.total - order.tax)
+        
+        order_products = OrderProduct.objects.filter(user=user, order=order)
+        
+        context['order_products'] = order_products
+        context['total'] = total
+        context['tax'] = tax
+        context['sub_total'] = sub_total
+        
+        return context
+
+class UserDashboardChangeProfile(CustomLoginRequiredMixin, TemplateView):
+    template_name = 'dashboard_profile.html'
+    
+    def post(self, *args, **kwargs):
+        user_profile = get_object_or_404(UserProfile, user=self.request.user)
+        user_form = UserForm(self.request.POST, instance=self.request.user)
+        profile_form = UserProfileForm(self.request.POST, self.request.FILES, instance=user_profile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            
+            if not self.request.FILES == {}:
+                # Suppression de l'ancienne images en cas mise à jour de la photo de profile afin d'optimiser l'espace
+                if profile_form.cleaned_data['picture'] and user_profile.picture:
+                    print()
+                    path = user_profile.picture.path
+                    new_path = path.split('src')[0] + "src"
+                    old_picture_path = new_path + str(user_profile.picture.url)
+                    if os.path.exists(old_picture_path):
+                        os.remove(old_picture_path)
+            
+            else:
+                if user_profile.picture:
+                    profile_form.cleaned_data['picture'] = user_profile.picture
+            profile_form.save()
+            messages.success(self.request, "Mise à jour réussi !")
+            return redirect("accounts:dashboard_profile")
+        
+        return self.render_to_response(context={
+            'user_form': user_form,
+            'profile_form': profile_form,
+            'user_profile': user_profile
+        })
+    
+    def get_context_data(self, *args, **kwargs):
+        user_profile = get_object_or_404(UserProfile, user=self.request.user)
+        
+        context = super(UserDashboardChangeProfile, self).get_context_data(*args, **kwargs)
+        
+        user_form = UserForm(instance=self.request.user)
+        profile_form = UserProfileForm(instance=user_profile)
+        
+        if user_profile:
+            context['user_profile'] = user_profile
+        
+        context['user_form'] = user_form
+        context['profile_form'] = profile_form
+        
+        return context
+
+
+class UserDashboardChangePassword(CustomLoginRequiredMixin, PasswordChangeView):
+    form_class = PasswordChangeForm
+    template_name = 'dashboard_change_password.html'
+    success_url = reverse_lazy("accounts:dashboard_password")
+    
+    def dispatch(self, *args, **kwargs):
+        if self.request.method == 'POST' and self.get_form().is_valid():
+            messages.success(self.request, "Votre mot de passe a bien été modifié")
+        return super(UserDashboardChangePassword, self).dispatch(*args, **kwargs)
 
 
 class UserForgotPassword(FormView):
@@ -143,7 +257,7 @@ class UserForgotPassword(FormView):
             'activation_link': activation_link,
         })
         send_mail(mail_subject, message, 'elirameskongo1234@gmail.com', [user.email], html_message=message)
-        
+
 
 class UserResetValidateView(View):
     def get(self, *args, **kwargs):
@@ -155,7 +269,7 @@ class UserResetValidateView(View):
             user = CustomUser.objects.get(id=uid)
         except(TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
             user = None
-            
+        
         if user and default_token_generator.check_token(user, token):
             self.request.session['uid'] = user.id
             messages.success(self.request, "Veuillez réinitialiser votre mot de passe")
@@ -197,7 +311,7 @@ class UserResetPassword(FormView):
                     user.save()
                     messages.success(self.request, "Votre mot de passe à été modifié avec succès")
                     return redirect("accounts:login")
-
+            
             else:
                 messages.error(self.request, "Erreur dans le processus. Veuillez recommencer ou contacter le "
                                              "propriétaire du site")
@@ -205,4 +319,3 @@ class UserResetPassword(FormView):
         else:
             messages.error(self.request, "Les mots de passe doivent correspondre")
             return redirect('accounts:reset_password')
-        

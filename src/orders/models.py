@@ -4,38 +4,8 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 from accounts.models import CustomUser
-
-# Déclaration des constantes de choix pour les différents choix possibles...
 from store.models import Products, ProductVariations
-
-PAYMENT_METHODS = (
-    ('paypal', 'paypal'),
-    ('wise', 'wise'),
-    ('paytest', 'paytest'),
-    ('carte de crédit', 'carte de crédit')
-)
-COUNTRY_CHOICES = (
-    ('Burkina Faso', 'Burkina Faso'),
-    ('Maroc', 'Maroc'),
-    ('France', 'France')
-)
-CITIES_CHOICES = (
-    ('Ouagadougou', 'Ouagadougou'),
-    ('Bobo Dioulasso', 'Bobo Dioulasso'),
-    ('Casablanca', 'Casablanca'),
-    ('Rabat', 'Rabat'),
-    ('Agadir', 'Agadir'),
-    ('Marrakech', 'Marrakech'),
-    ('Paris', 'Paris'),
-    ('Marseille', 'Marseille'),
-    ('Nice', 'Nice'),
-)
-STATUS = (
-    ('Nouveau', 'Nouveau'),
-    ('Accepté', 'Accepté'),
-    ('Complété', 'Complété'),
-    ('Annulé', 'Annulé')
-)
+from utils.constants import PAYMENT_METHODS, STATUS, COUNTRY_CHOICES, CITIES_CHOICES
 
 
 class Payment(models.Model):
@@ -77,6 +47,9 @@ class Order(models.Model):
     
     def __str__(self):
         return f"Commande de {self.user.first_name}"
+    
+    def full_name(self):
+        return f"{self.first_name} {str(self.last_name).upper()}"
     
     class Meta:
         verbose_name = 'Commande'

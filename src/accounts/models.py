@@ -1,8 +1,12 @@
+import os
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
 from phonenumber_field.modelfields import PhoneNumberField
+
+from utils.constants import COUNTRY_CHOICES, CITIES_CHOICES
 
 
 class CustomUser(AbstractUser):
@@ -25,4 +29,17 @@ class CustomUser(AbstractUser):
         if not self.username:
             self.username = self.email.split('@')[0]
         super(CustomUser, self).save(*args, **kwargs)
-        
+  
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')
+    country = models.CharField(max_length=50, verbose_name='Pays', choices=COUNTRY_CHOICES, blank=True,)
+    city = models.CharField(max_length=50, verbose_name='Ville', choices=CITIES_CHOICES, blank=True,)
+    quartier = models.CharField(max_length=70, verbose_name='Quartier', blank=True)
+    picture = models.ImageField(verbose_name='Photo de profile', upload_to='profile', null=True, blank=True)
+    
+    def delete(self, *args, **kwargs):
+        if self.picture:
+            if os.path.exists(self.picture.path):
+                os.remove(self.picture.path)
+        return super(UserProfile, self).delete(*args, **kwargs)

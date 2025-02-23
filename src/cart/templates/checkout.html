@@ -43,15 +43,15 @@
                             <div class="form-row">
                                 <div class="form-group col-md-4 col-lg-4 col-sm-12">
                                     <label>Pays</label>
-                                    {{ form.country }}
+                                    {% render_field form.country value=request.user.profile.country %}
                                 </div>
                                 <div class="form-group col-md-4 col-lg-4 col-sm-12">
                                     <label>Ville</label>
-                                    {{ form.city }}
+                                    {% render_field form.city value=request.user.profile.city %}
                                 </div>
                                 <div class="form-group col-md-4 col-lg-4 col-sm-12">
                                     <label>Quartier</label>
-                                    {{ form.quartier }}
+                                    {% render_field form.quartier value=request.user.profile.quartier %}
                                 </div>
                             </div>
                             <div class="form-group">
