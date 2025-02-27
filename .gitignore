@@ -6,4 +6,3 @@ __pycache__/
 env/
 src/media/
 src/ecommerce/.env
-requirements.txt

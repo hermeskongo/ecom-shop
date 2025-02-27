@@ -1,0 +1,10 @@
+asgiref==3.8.1
+Django==5.1.6
+django-auto-logout==0.5.1
+django-phonenumber-field==8.0.0
+django-widget-tweaks==1.5.0
+phonenumbers==8.13.54
+pillow==11.1.0
+python-environ==0.4.54
+sqlparse==0.5.3
+tzdata==2025.1
