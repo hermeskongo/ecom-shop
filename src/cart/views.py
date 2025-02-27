@@ -1,14 +1,11 @@
 # Create your views here.
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q, Count
-from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, FormView
 
-from accounts.forms import UserProfileForm
 from accounts.models import UserProfile
 from cart.models import Cart, CartItem
 from orders.forms import OrderForm

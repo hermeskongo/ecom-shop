@@ -1,6 +1,9 @@
 .idea/
+.vscode/
 .git/
 db.sqlite3
 __pycache__/
 env/
 src/media/
+src/ecommerce/.env
+requirements.txt

@@ -25,14 +25,25 @@
                         <div class="card card-product-grid">
                             <a href="{% url 'store:product-details' slug=product.slug %}" class="img-wrap"> <img src="{{ product.image.url }}"> </a>
                             <figcaption class="info-wrap">
-                                <a href="{% url 'store:product-details' slug=product.slug %}" class="title">{{ product.name }}</a>
-                                {% if product.promotion_price == product.price %}
-                                    <div class="price mt-1">${{ product.price }}</div>
-                                {% else %}
-                                    <span class="price">${{ product.promotion_price }}</span>
-                                    <del class="price-old">${{ product.price }}</del>
-                                {% endif %}
-                                <a href="{% url 'store:product-details' slug=product.slug %}" class="mt-4 btn btn-block btn-primary">Voir les détails</a>
+                                <a href="{% url 'store:product-details' slug=product.slug %}" class="title text-center mb-2">{{ product.name }}</a>
+                                <div class="d-flex justify-content-between mb-0">
+                                    <div>
+                                        {% if product.promotion_price == product.price %}
+                                            <div class="price mt-1">${{ product.price }}</div>
+                                        {% else %}
+                                            <span class="price">${{ product.promotion_price }}</span>
+                                            <del class="price-old">${{ product.price }}</del>
+                                        {% endif %}
+                                    </div>
+                                    <span class="rating_stars mb-4 d-block">
+                                        <i class="{% if product.review_average == 0.5 %}fas fa-star-half-alt{% elif product.review_average < 1%}far fa-star{% elif product.review_average > 0.5 %}fas fa-star{% endif %}"></i>
+                                        <i class="{% if product.review_average == 1.5 %}fas fa-star-half-alt{% elif product.review_average < 2%}far fa-star{% elif product.review_average  > 1.5 %}fas fa-star{% endif %}"></i>
+                                        <i class="{% if product.review_average == 2.5 %}fas fa-star-half-alt{% elif product.review_average < 3%}far fa-star{% elif product.review_average > 2.5 %}fas fa-star{% endif %}"></i>
+                                        <i class="{% if product.review_average == 3.5 %}fas fa-star-half-alt{% elif product.review_average < 4%}far fa-star{% elif product.review_average > 3.5 %}fas fa-star{% endif %}"></i>
+                                        <i class="{% if product.review_average == 4.5 %}fas fa-star-half-alt{% elif product.review_average < 5%}far fa-star{% elif product.review_average > 4.5 %}fas fa-star{% endif %}"></i>
+                                    </span>
+                                </div>
+                                <a href="{% url 'store:product-details' slug=product.slug %}" class="mt-1 btn btn-block btn-primary">Voir les détails</a>
                             </figcaption>
                         </div>
                     </div>
